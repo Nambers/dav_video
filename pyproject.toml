@@ -1,0 +1,49 @@
+[project]
+name = "davideo"
+description = "Terminal WebDAV browser that hands media to mpv (multi-server creds, playlists, audio/subtitle track control)"
+readme = "README.md"
+requires-python = ">=3.11"
+# Single source of truth: davideo/__init__.py. Two hand-kept version
+# strings drift, and the about box reads the module one.
+dynamic = ["version"]
+authors = [{ name = "Eritque Arcus", email = "eritque-arcus@ikuyo.dev" }]
+keywords = ["webdav", "mpv", "tui", "textual", "terminal", "video", "player", "alist"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Utilities",
+]
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "textual>=0.60",
+    "webdav4>=0.10",
+    "keyring>=24",
+    "cryptography>=42",
+]
+
+[project.urls]
+Homepage = "https://github.com/nambers/davideo"
+Source = "https://github.com/nambers/davideo"
+Issues = "https://github.com/nambers/davideo/issues"
+
+[project.scripts]
+davideo = "davideo.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["davideo", "davideo.core", "davideo.tui"]
+
+[tool.setuptools.dynamic]
+version = { attr = "davideo.__version__" }

@@ -1,0 +1,7 @@
+# The smoke test needs no server, display or third-party library, so ship it:
+# a downstream packager can run it as the build check.
+include scripts/smoketest.py
+# Stamps davideo/_build.py so the about box can report a build date even
+# after the .git the package was built from is gone.
+include scripts/stamp_build.py
+include LICENSE

@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+build/
+dist/
+CLAUDE.md
+davideo/_build.py
