@@ -1,9 +1,9 @@
 [project]
-name = "davideo"
+name = "dav_video"
 description = "Terminal WebDAV browser that hands media to mpv (multi-server creds, playlists, audio/subtitle track control)"
 readme = "README.md"
 requires-python = ">=3.11"
-# Single source of truth: davideo/__init__.py. Two hand-kept version
+# Single source of truth: dav_video/__init__.py. Two hand-kept version
 # strings drift, and the about box reads the module one.
 dynamic = ["version"]
 authors = [{ name = "Eritque Arcus", email = "eritque-arcus@ikuyo.dev" }]
@@ -31,19 +31,19 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/nambers/davideo"
-Source = "https://github.com/nambers/davideo"
-Issues = "https://github.com/nambers/davideo/issues"
+Homepage = "https://github.com/nambers/dav_video"
+Source = "https://github.com/nambers/dav_video"
+Issues = "https://github.com/nambers/dav_video/issues"
 
 [project.scripts]
-davideo = "davideo.__main__:main"
+dav_video = "dav_video.__main__:main"
 
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["davideo", "davideo.core", "davideo.tui"]
+packages = ["dav_video", "dav_video.core", "dav_video.tui"]
 
 [tool.setuptools.dynamic]
-version = { attr = "davideo.__version__" }
+version = { attr = "dav_video.__version__" }

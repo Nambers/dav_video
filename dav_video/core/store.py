@@ -1,6 +1,6 @@
 """Non-secret persistence: server profiles, saved playlists, app settings.
 
-Stored as one JSON file under $XDG_CONFIG_HOME/davideo/config.json.
+Stored as one JSON file under $XDG_CONFIG_HOME/dav_video/config.json.
 stdlib-only on purpose -- this module must import cleanly without any third
 party dependency, so the core layer can be unit-tested in isolation.
 """
@@ -16,7 +16,7 @@ from .models import Server, Playlist, Settings
 
 def config_dir() -> Path:
     base = os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config")
-    return Path(base) / "davideo"
+    return Path(base) / "dav_video"
 
 
 class ConfigStore:

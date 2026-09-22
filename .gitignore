@@ -5,4 +5,4 @@ __pycache__/
 build/
 dist/
 CLAUDE.md
-davideo/_build.py
+dav_video/_build.py

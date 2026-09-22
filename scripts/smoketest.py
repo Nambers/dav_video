@@ -18,8 +18,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from davideo.core.models import Playlist, Server, Track
-from davideo.core.store import ConfigStore
+from dav_video.core.models import Playlist, Server, Track
+from dav_video.core.store import ConfigStore
 
 
 def test_models_roundtrip() -> None:
@@ -60,7 +60,7 @@ def test_url_and_auth() -> None:
 def test_subtitle_matching() -> None:
     """Sidecar subtitles must anchor on the FULL video stem -- a prefix match
     would sideload every episode's subtitle onto episode 1."""
-    from davideo.core.webdav import subtitle_matches as m
+    from dav_video.core.webdav import subtitle_matches as m
 
     assert m("Show.S01E01.mkv", "Show.S01E01.zh.srt")
     assert m("Show.S01E01.mkv", "Show.S01E01.srt")
@@ -77,7 +77,7 @@ def test_subtitle_matching() -> None:
 def test_sibling_subtitle_resolution() -> None:
     """Resolving a queue's subtitles must cost one listing per DIRECTORY, so the
     matching half is a pure function over an existing listing."""
-    from davideo.core.webdav import Entry, parent_of, sibling_subtitles
+    from dav_video.core.webdav import Entry, parent_of, sibling_subtitles
 
     assert parent_of("/Show/S01/ep1.mkv") == "/Show/S01"
     assert parent_of("/ep1.mkv") == "/"
@@ -106,7 +106,7 @@ def test_sibling_subtitle_resolution() -> None:
 def test_subtitle_preference() -> None:
     """mpv takes exactly ONE sidecar per playlist entry, so a release shipping
     .chs + .cht + .en needs a rule. The rule is the user's own mpv --slang."""
-    from davideo.core.webdav import Entry, preferred_subtitle, subtitle_tag
+    from dav_video.core.webdav import Entry, preferred_subtitle, subtitle_tag
 
     def entry(name):
         return Entry(path="/S01/" + name, display=name, kind="file")
@@ -137,7 +137,7 @@ def test_subtitle_preference() -> None:
 def test_name_filter() -> None:
     """The browser filter is a pure index list over names, so it survives any
     sort order and can be reproduced exactly in a port."""
-    from davideo.core.webdav import filter_names
+    from dav_video.core.webdav import filter_names
 
     names = ["..", "Season 1", "[SubsPlease] Show - 01 [1080p].mkv",
              "[SubsPlease] Show - 02 [1080p].mkv", "Axy.mkv", "notes.txt"]
@@ -162,7 +162,7 @@ def test_name_filter() -> None:
 def test_sort_is_stable_by_identity() -> None:
     """Sorting must not renumber anything the UI keys a selection on. The app
     tracks marked files by path, so re-sorting has to preserve those paths."""
-    from davideo.core.webdav import Entry, SORT_MODES, sort_entries
+    from dav_video.core.webdav import Entry, SORT_MODES, sort_entries
 
     entries = [Entry("/b.mkv", "file", "b.mkv", 300),
                Entry("/a.mkv", "file", "a.mkv", 100),
@@ -175,7 +175,7 @@ def test_sort_is_stable_by_identity() -> None:
 
 
 def test_build_stamp() -> None:
-    from davideo.core import buildinfo
+    from dav_video.core import buildinfo
 
     # git's %cI, and SOURCE_DATE_EPOCH's raw seconds, both land as local time.
     assert buildinfo.format_time("2026-09-18T12:34:56+08:00").startswith("20")
@@ -198,7 +198,7 @@ def test_build_stamp() -> None:
 
 def test_render_features() -> None:
     """Render options are independent toggles composed into an argv."""
-    from davideo.core import render
+    from dav_video.core import render
 
     assert render.build_args([]) == [], "nothing enabled must add nothing"
     args = render.build_args(["gpu_next", "hdr_passthrough"])
@@ -221,7 +221,7 @@ def test_render_features() -> None:
 
 def test_render_warnings() -> None:
     """The two silent-failure cases must be reported to the user."""
-    from davideo.core import render
+    from dav_video.core import render
 
     assert render.warnings(["gpu_next", "hdr_passthrough"]), "needs a fullscreen warning"
     assert render.warnings(["scaling"]), "features without gpu-next must warn"
@@ -236,7 +236,7 @@ def test_render_warnings() -> None:
 
 def test_legacy_preset_migration() -> None:
     """Configs written by the preset-ladder version must keep working."""
-    from davideo.core.models import Settings
+    from dav_video.core.models import Settings
 
     migrated = Settings.from_dict({"render_preset": "hdr", "fullscreen": True})
     assert migrated.render_features == [
@@ -252,7 +252,7 @@ def test_legacy_preset_migration() -> None:
 def test_keymap_defaults_are_sane() -> None:
     """The default key table has to be internally consistent: no action can
     shadow another, and nothing may sit on a key the user needs to escape with."""
-    from davideo.core import keymap
+    from dav_video.core import keymap
 
     keys = keymap.resolve({})
     assert keymap.conflicts(keys) == {}, keymap.conflicts(keys)
@@ -286,7 +286,7 @@ def test_keymap_defaults_are_sane() -> None:
 def test_keymap_overrides() -> None:
     """Overrides are a sparse patch: only what differs from the default is kept,
     unknown actions are dropped, and '' means deliberately unbound."""
-    from davideo.core import keymap
+    from dav_video.core import keymap
 
     assert keymap.normalize({"sort": "z"}) == {"sort": "z"}
     assert keymap.normalize({"sort": "s"}) == {}, "a default must not be written out"
@@ -306,7 +306,7 @@ def test_keymap_overrides() -> None:
 
 def test_keymap_validation_and_display() -> None:
     """Rebinding must refuse the keys you would need to undo the rebinding."""
-    from davideo.core import keymap
+    from dav_video.core import keymap
 
     assert keymap.validate_key("z") is None
     assert keymap.validate_key("ctrl+j") is None
@@ -324,8 +324,8 @@ def test_keymap_validation_and_display() -> None:
 
 
 def test_keybindings_persist() -> None:
-    from davideo.core.models import Settings
-    from davideo.core.store import ConfigStore
+    from dav_video.core.models import Settings
+    from dav_video.core.store import ConfigStore
 
     with tempfile.TemporaryDirectory() as d:
         path = Path(d) / "config.json"
@@ -338,8 +338,8 @@ def test_keybindings_persist() -> None:
 
 
 def test_settings_roundtrip() -> None:
-    from davideo.core.models import Settings
-    from davideo.core.store import ConfigStore
+    from dav_video.core.models import Settings
+    from dav_video.core.store import ConfigStore
 
     with tempfile.TemporaryDirectory() as d:
         path = Path(d) / "config.json"
@@ -363,7 +363,7 @@ def test_media_tags() -> None:
     """Media derivation is pure: no ffprobe, no mpv, no server needed. A probe
     writes EVERY field -- "" for "does not apply" -- which is what lets a
     missing key mean "never probed"."""
-    from davideo.core.probe import MEDIA_FIELDS, media_from_fields, media_labels
+    from dav_video.core.probe import MEDIA_FIELDS, media_from_fields, media_labels
 
     def labels(*a, **kw):
         return media_labels(media_from_fields(*a, **kw))
@@ -395,7 +395,7 @@ def test_media_tags() -> None:
 def test_media_is_keyed_not_versioned() -> None:
     """A track probed by an older build is spotted by a MISSING KEY, not by a
     format version and not by where a label sits in a list."""
-    from davideo.core.probe import (MEDIA_FIELDS, media_from_fields,
+    from dav_video.core.probe import (MEDIA_FIELDS, media_from_fields,
                                        media_from_legacy, media_labels,
                                        needs_probe)
 
@@ -430,7 +430,7 @@ def test_media_is_keyed_not_versioned() -> None:
 def test_duration_and_size_formatting() -> None:
     """Pure display helpers -- every caller feeds them values straight off a
     server or a probe, so junk in must never raise."""
-    from davideo.core.probe import (format_bitrate, format_duration,
+    from dav_video.core.probe import (format_bitrate, format_duration,
                                        format_size)
 
     assert format_duration(5400) == "1h30m"
@@ -455,8 +455,8 @@ def test_ffprobe_payload_parsing() -> None:
     """The ffprobe backend reads colour from the FRAME, not the container: a
     remux whose Matroska header omits the transfer function still has it in the
     bitstream, and container-level probing would call an HDR file SDR."""
-    from davideo.core.probe import _media_from_ffprobe
-    from davideo.core.probe import media_labels
+    from dav_video.core.probe import _media_from_ffprobe
+    from dav_video.core.probe import media_labels
 
     def parse(payload):
         return media_labels(_media_from_ffprobe(payload))
@@ -508,7 +508,7 @@ def test_ffprobe_payload_parsing() -> None:
 def test_media_details_parsing() -> None:
     """The info panel's two backends must agree on shape. Both parsers are pure,
     so this runs with no ffprobe, no mpv and no server."""
-    from davideo.core.probe import details_from_ffprobe, details_from_mpv_output
+    from dav_video.core.probe import details_from_ffprobe, details_from_mpv_output
 
     payload = {
         "format": {"format_name": "matroska,webm", "duration": "5400.0",
@@ -569,7 +569,7 @@ def test_media_details_parsing() -> None:
 
 def test_track_labels_roundtrip() -> None:
     """Probed labels and user tags are separate fields and both persist."""
-    from davideo.core.models import Track
+    from dav_video.core.models import Track
 
     t = Track("home", "/a.mkv", "A",
               media={"duration": "1h30m", "resolution": "4k", "range": "hdr",
@@ -589,7 +589,7 @@ def test_track_labels_roundtrip() -> None:
 
 
 def test_mpv_ipc_framing() -> None:
-    from davideo.core.mpv import MpvController
+    from dav_video.core.mpv import MpvController
 
     # fake mpv: a unix socket server that replies success + emits a stray event
     sockdir = tempfile.mkdtemp()

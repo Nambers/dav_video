@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Write ``davideo/_build.py`` so the about box can say when this was built.
+"""Write ``dav_video/_build.py`` so the about box can say when this was built.
 
 Run it in the source tree right before building a package:
 
     python scripts/stamp_build.py          # git HEAD's time + sha, else now
     python scripts/stamp_build.py --now    # always "now", ignore git
 
-The generated file is optional and never committed: without it davideo reads
+The generated file is optional and never committed: without it dav_video reads
 git HEAD at runtime (works from a checkout), and without that too the about box
 just says "unknown". It exists for the case where neither is available -- an
 installed package, whose .git was left behind in the build tree. That's the
@@ -25,9 +25,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from davideo.core.buildinfo import git_head
+from dav_video.core.buildinfo import git_head
 
-TARGET = Path(__file__).resolve().parent.parent / "davideo" / "_build.py"
+TARGET = Path(__file__).resolve().parent.parent / "dav_video" / "_build.py"
 
 
 def main(argv: list[str]) -> int:

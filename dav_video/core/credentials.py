@@ -22,7 +22,7 @@ from typing import Protocol
 
 from .store import config_dir
 
-SERVICE = "davideo"
+SERVICE = "dav_video"
 
 
 class CredentialError(Exception):
@@ -73,7 +73,7 @@ class EncryptedFileStore:
         if not master_password:
             raise CredentialError(
                 "encrypted backend needs a master password "
-                "(set DAVIDEO_MASTER)"
+                "(set DAV_VIDEO_MASTER)"
             )
         from cryptography.fernet import Fernet
         from cryptography.hazmat.primitives import hashes
@@ -152,7 +152,7 @@ class EncryptedFileStore:
             # credential-store problem and should read as one.
             raise CredentialError(
                 f"cannot decrypt the stored password for '{server_name}' "
-                "(wrong DAVIDEO_MASTER, or the entry is corrupt)"
+                "(wrong DAV_VIDEO_MASTER, or the entry is corrupt)"
             ) from exc
 
     def delete_password(self, server_name: str) -> None:
@@ -161,10 +161,10 @@ class EncryptedFileStore:
 
 
 def get_credential_store() -> CredentialStore:
-    """Pick a backend. Honors DAVIDEO_MASTER (forces encrypted file);
+    """Pick a backend. Honors DAV_VIDEO_MASTER (forces encrypted file);
     otherwise tries keyring and probes it; raises CredentialError with guidance
     if neither is usable."""
-    master = os.environ.get("DAVIDEO_MASTER")
+    master = os.environ.get("DAV_VIDEO_MASTER")
     if master:
         return EncryptedFileStore(master)
     try:
@@ -174,6 +174,6 @@ def get_credential_store() -> CredentialStore:
     except Exception as exc:
         raise CredentialError(
             "no usable keyring backend. Either start a secret-service daemon "
-            "(KWallet / gnome-keyring), or set DAVIDEO_MASTER to use the "
+            "(KWallet / gnome-keyring), or set DAV_VIDEO_MASTER to use the "
             f"encrypted-file fallback. (underlying: {exc})"
         ) from exc

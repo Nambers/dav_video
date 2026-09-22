@@ -1,4 +1,4 @@
-"""Entry point: ``python -m davideo``."""
+"""Entry point: ``python -m dav_video``."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ def main() -> int:
 
     store = ConfigStore()
 
-    # import late so `python -m davideo --help`-style checks don't need textual
+    # import late so `python -m dav_video --help`-style checks don't need textual
     from .tui.app import WebDavTuiApp
 
     WebDavTuiApp(store, creds).run()

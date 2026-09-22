@@ -36,7 +36,7 @@ class MpvError(Exception):
 
 def default_socket_path() -> str:
     base = os.environ.get("XDG_RUNTIME_DIR") or tempfile.gettempdir()
-    return os.path.join(base, f"davideo-mpv-{os.getpid()}.sock")
+    return os.path.join(base, f"dav_video-mpv-{os.getpid()}.sock")
 
 
 class MpvController:

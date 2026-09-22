@@ -121,7 +121,7 @@ ACTIONS: tuple[Action, ...] = (
            "Version, paths and backends this run is using", "App",
            footer=CONTEXTS),
     Action("quit", "q", "Quit",
-           "Leave davideo (mpv is shut down with it)", "App", footer=CONTEXTS),
+           "Leave dav_video (mpv is shut down with it)", "App", footer=CONTEXTS),
 )
 
 BY_ID: dict[str, Action] = {a.id: a for a in ACTIONS}

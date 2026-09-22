@@ -1,10 +1,10 @@
-"""When this copy of davideo was built -- one line for the about box.
+"""When this copy of dav_video was built -- one line for the about box.
 
 The version string alone can't answer "how old is what I'm running": a release
 and an AUR ``-git`` package both say 0.1.0, and the -git one is rebuilt from
 whatever HEAD was that day. Three sources, first hit wins:
 
-  1. ``davideo/_build.py`` -- a stamp written at build time (generated, never
+  1. ``dav_video/_build.py`` -- a stamp written at build time (generated, never
      committed; see ``scripts/stamp_build.py``). The only source that survives
      installation, so this is the one a packager sets.
   2. git HEAD -- running from a checkout: the dev tree, and the -git package's
@@ -27,7 +27,7 @@ from pathlib import Path
 # The about box opens synchronously, so git gets a short leash: on a slow or
 # networked checkout we'd rather say "unknown" than stall the UI.
 GIT_TIMEOUT = 2.0
-_STAMP_MODULE = "davideo._build"
+_STAMP_MODULE = "dav_video._build"
 
 
 @dataclass(frozen=True)

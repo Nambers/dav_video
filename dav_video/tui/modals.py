@@ -361,7 +361,7 @@ class SettingsScreen(ModalScreen[str | None]):
     ENTRIES: tuple[tuple[str, str, str, str], ...] = (
         ("keys", "Keyboard shortcuts", "the full list — rebind anything", ""),
         ("render", "mpv render settings", "gpu-next · HDR · scaling", "render_settings"),
-        ("about", "About davideo", "version · paths · backends", "about"),
+        ("about", "About dav_video", "version · paths · backends", "about"),
     )
 
     def __init__(self, keys: dict[str, str]):
@@ -667,7 +667,7 @@ class AboutScreen(ModalScreen[None]):
         with Vertical(id="box"):
             # Content, not markup: these are paths and versions from the
             # environment, and a stray bracket would parse as a style tag.
-            yield Label(Content(f"davideo {self._version}"), classes="name")
+            yield Label(Content(f"dav_video {self._version}"), classes="name")
             yield Label(Content(self._blurb), classes="blurb")
             width = max((len(key) for key, _ in self._rows), default=0)
             with VerticalScroll(id="rows"):

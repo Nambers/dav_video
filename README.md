@@ -1,4 +1,4 @@
-# davideo
+# dav_video
 
 A keyboard-driven terminal app that browses WebDAV servers and hands media to
 **mpv**. Built to replace PotPlayer-on-Windows-style workflows on Linux, without
@@ -31,15 +31,15 @@ username, playlists and app settings. Passwords go to:
 
 - **keyring** (default): KWallet / GNOME Keyring via Secret Service. The app
   probes it on startup and refuses to persist plaintext.
-- **encrypted-file** (fallback): set `DAVIDEO_MASTER=<master-pw>`; a Fernet
+- **encrypted-file** (fallback): set `DAV_VIDEO_MASTER=<master-pw>`; a Fernet
   key is derived with PBKDF2-HMAC-SHA256 (390k iters) and per-server tokens live
-  in a `~/.config/davideo/secrets.enc` that is created `0600` and replaced atomically.
+  in a `~/.config/dav_video/secrets.enc` that is created `0600` and replaced atomically.
 
 ## Install & run
 
 ```bash
-pip install git+https://github.com/nambers/davideo
-davideo
+pip install git+https://github.com/nambers/dav_video
+dav_video
 ```
 
 mpv must be on `PATH`. **ffprobe** (from the `ffmpeg` package) is optional but
@@ -56,7 +56,7 @@ itself. An **installed** copy has no `.git` left to read, so stamp it at build
 time, inside the source tree, before installing:
 
 ```bash
-python scripts/stamp_build.py     # writes davideo/_build.py; git HEAD, else now
+python scripts/stamp_build.py     # writes dav_video/_build.py; git HEAD, else now
 ```
 
 `SOURCE_DATE_EPOCH` overrides both, so reproducible builds stay reproducible.
@@ -166,7 +166,7 @@ there is no key for them either. See [Subtitles](#subtitles).
 | `?` ★ | Shortcuts, mpv rendering, about |
 | `g` | mpv render switches (gpu-next / HDR / scaling / …) |
 | `i` ★ | Version, paths and backends this run is using |
-| `q` ★ | Leave davideo (mpv is shut down with it) |
+| `q` ★ | Leave dav_video (mpv is shut down with it) |
 
 Every dialog is keyboard-only too: ↑ / ↓ move between fields, switches and
 buttons, Space toggles a switch, Enter accepts, Escape cancels.
@@ -264,7 +264,7 @@ HDR — 10-bit is an encoding depth, not a transfer function. Only files tagged
 
 A `.srt` / `.ass` sitting next to the video **on the server** is the one thing
 mpv cannot find for itself: it would need a directory listing, a filename rule,
-and the `Authorization` header. So davideo resolves it and hands it to mpv
+and the `Authorization` header. So dav_video resolves it and hands it to mpv
 *with the file* — every entry in a queue carries its own, so episode 2 gets
 episode 2's subtitles when mpv walks on to it. **No keypress, nothing to
 remember.**
@@ -318,7 +318,7 @@ written to mpv's watch-later file first, so it resumes).
 
 Both paths are printed at the bottom of the `g` screen:
 
-- `~/.config/davideo/config.json` — servers, playlists, and `settings`.
+- `~/.config/dav_video/config.json` — servers, playlists, and `settings`.
   In `settings`, `render_features` is the switch list, `mpv_extra_args` is a
   free-form list applied **last** so it overrides anything above, and
   `keybindings` holds your key changes.

@@ -174,7 +174,7 @@ class WebDavTuiApp(App):
         yield Static(id="footerbar")
 
     def on_mount(self) -> None:
-        self.title = "davideo"
+        self.title = "dav_video"
         # The active queue IS a registered, auto-saved playlist. Resume the one
         # that was active at exit (settings.last_queue); otherwise register it
         # now so it is saved from creation and shows up under Open (o).
