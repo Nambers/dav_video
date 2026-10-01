@@ -184,8 +184,12 @@ including the ones that are normally shortcuts:
 
 Matching is a **case-insensitive substring** anywhere in the name.
 
-- **Enter** keeps the narrowed list and gives the keys back, which is the point:
-  filter down to one season, `⇧↓` to mark the block, `Space` to queue it.
+- **Enter** opens / plays the highlighted match in one press. The narrowed list
+  stays, so after playing a file you are back on the same matches.
+- **Any other non-text key** (`⇧↓`, `→`, …) stops typing, keeps the narrowed
+  list and does its usual job, which is the point: filter down to one season,
+  `⇧↓` to mark the block, `Space` to queue it. `↑ ↓` just move, and you can
+  keep typing after them.
 - **Escape** clears the filter. Pressing it again clears the marks — one layer
   per press, most recent first.
 - Narrowing the view never drops marks you made before narrowing.

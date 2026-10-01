@@ -145,8 +145,8 @@ class WebDavTuiApp(App):
         # rebuilt on every sort change, so an index would drift to other files.
         self._sel: set[str] = set()
         self._sort_mode = 0               # index into SORT_MODES
-        # Two separate things: `_filter` is the narrowing that is APPLIED (it
-        # survives so you can then mark and queue what it found), `_filtering`
+        # Two separate things: `_browser_filter` is the narrowing that is APPLIED (it
+        # survives so you can then mark and queue what it found), `_filter_typing`
         # is whether keystrokes are currently being eaten to edit it.
         self._browser_filter: str = ""
         self._filter_typing = False
@@ -715,7 +715,10 @@ class WebDavTuiApp(App):
             return
         self._filter_typing = True
         self._update_path_label()
-        self._set_status("type to narrow · ↑↓ move · Enter keep it · Esc clear")
+        # Content, not markup: a rebound key can literally be "[".
+        mark = self._keys.get("select_down", "")
+        mark = f" · {keymap.format_keys(mark)} mark" if mark else ""
+        self._set_status(Content(f"type to narrow · ↑↓ move · Enter open{mark} · Esc clear"))
 
     def on_key(self, event: events.Key) -> None:
         """Feed keystrokes to the filter while it is being typed.
@@ -733,9 +736,13 @@ class WebDavTuiApp(App):
         if key == "escape":
             self._end_filter(clear=True)
         elif key == "enter":
-            # Keep the narrowed list: the point of filtering is usually to mark
-            # and queue what it found.
+            # One press: stop typing AND open the highlighted row, same as
+            # Enter anywhere else in the browser. The narrowing is kept, so
+            # coming back from a played file lands on the same matches. Called
+            # on the browser directly: the filter is the browser's, whatever
+            # has focus.
             self._end_filter(clear=False)
+            self.query_one("#browser", ListView).action_select_cursor()
         elif key == "backspace":
             self._browser_filter = self._browser_filter[:-1]
             self._render_browser()
@@ -745,7 +752,12 @@ class WebDavTuiApp(App):
             self._browser_filter += event.character
             self._render_browser()
         else:
-            return                      # ctrl+…, function keys: not our business
+            # Not text, so a command (⇧↓ mark, → queue, Ctrl+P…): typing is
+            # over, the narrowing stays, and the key still does its job. This
+            # is how "filter, ⇧↓ to mark, Space to queue" works without Enter
+            # -- Space typed while still typing would be a space in the filter.
+            self._end_filter(clear=False)
+            return
         event.stop()
         event.prevent_default()
 
@@ -753,7 +765,12 @@ class WebDavTuiApp(App):
         self._filter_typing = False
         if clear:
             self._browser_filter = ""
-        self._render_browser()
+            self._render_browser()
+        else:
+            # Same filter, same rows: only the caret goes. Re-rendering would
+            # throw the cursor back to row 0 -- and Enter / ⇧↓ right after
+            # this act on the row the user had moved to.
+            self._update_path_label()
         self._set_status("filter cleared" if clear
                          else f"filter kept: {self._browser_filter}" if self._browser_filter
                          else "filter cleared")
